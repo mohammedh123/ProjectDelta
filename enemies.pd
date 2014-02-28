@@ -1,0 +1,841 @@
+controller PlayerController
+{
+	//x y speed angle radius maxlength chargetime lifetime spr
+	left = emitter PlayerEmitter(-6, 0, 0);
+	right = emitter PlayerEmitter(6, 0, 0);
+
+	// Redundant state, but necessary for now.  Later versions of
+	// bulletscript may create these automatically.
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter PlayerEmitter
+{
+	Emit = state
+	{
+		emitp bullet(This_X, This_Y, 16, -PI*0.5, 1, 5, STANDARD_GREEN);
+		wait(0.04);
+	}
+}
+
+controller specialtest5
+{
+	main = emitter specialtest5emitter(0, 0, 0);
+
+	// Redundant state, but necessary for now.  Later versions of
+	// bulletscript may create these automatically.
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter specialtest5emitter
+{
+	curFrame = 0;
+	turn = function(positive)
+	{
+		wait(0.25);
+		$angle += {positive*3*PI/4,4};
+		$speed = {1, 1};
+		wait(4);
+		$speed = {0.5, 1};
+	}
+	
+	Emit = state
+	{
+		maxBul = 96;
+		degC = 2*PI/maxBul;
+		
+		i = 0;
+		offsetA = GetAngleTowardsPlayer(This_X, This_Y);
+		while(i < maxBul)
+		{
+			emit bullet(This_X, This_Y, 2, offsetA + degC*i, -1, GREEN1, 1) : turn(1);
+			emit bullet(This_X, This_Y, 2, offsetA + degC*0.5 + degC*i, -1, GREEN1, 1) : turn(-1);
+			
+			//emit bullet(This_X, This_Y, 1.5, offsetA + degC*i, -1, RED1, 1) : turn(1);
+			//emit bullet(This_X, This_Y, 1.5, offsetA + degC*0.5 + degC*i, -1, RED1, 1) : turn(-1);
+			i++;
+		}
+		if(curFrame <= 5)
+		{
+			wait(3);
+		}
+		else if(curFrame <= 7)
+		{
+			wait(2.5);
+		}
+		else if(curFrame <= 10)
+		{
+			wait(2);
+		}
+		else if(curFrame <= 13)
+		{
+			wait(2);
+		}
+		else if(curFrame <= 15)
+		{
+			wait(1.5);
+		}
+		else if(curFrame <= 20)
+		{
+			wait(1);
+		}
+		else
+		{
+			wait(0.5);
+		}
+		curFrame++;
+	}
+}
+
+controller specialtest4
+{
+	main = emitter specialtest4emitter(0, 0, 0);
+
+	// Redundant state, but necessary for now.  Later versions of
+	// bulletscript may create these automatically.
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter specialtest4emitter
+{
+	spinDamnYou = affector Spin(2.5);
+	
+	move = function(time)
+	{
+		wait(time);
+		$speed += {3, 2};
+	}
+	
+	grow = function(angle)
+	{
+		$radius = 4;
+		$radius = {256, 4};
+		
+		while(angle != -999)
+		{
+			tA = Random(0, 2*PI);
+			emit bullet($x + Cos(tA)*$radius, $y + Sin(tA)*$radius, 0, Random(0, 2*PI), -1, ORANGE5, 1) : move(2);
+			wait(0.01);
+		}
+	}
+	
+	Emit = state
+	{
+	//x y speed angle radius maxlength chargetime lifetime spr
+		
+		emitt bullet(This_X, This_Y, 3, Player_X, Player_Y, -1, RED7, 1) : spinDamnYou, grow(0);
+			
+		wait(3);
+	}
+}
+
+controller specialtest2
+{
+	main = emitter specialtest2emitter(0, 0, 0);
+
+	// Redundant state, but necessary for now.  Later versions of
+	// bulletscript may create these automatically.
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter specialtest3emitter
+{
+	curState = 0;
+	x = 0;
+	y = 0;	
+	curFrame = 0;
+	radius = 0;	
+
+	explode = function(time)
+	{
+		wait(time);
+		$speed = {2, 1};
+	}
+	
+	explode2 = function(time)
+	{
+		wait(time);
+		$speed = {16,1};
+		$angle = GetAngleTowardsPlayer($x, $y);
+	}
+	
+	Emit = state
+	{		
+		x = This_X;
+		y = This_Y;
+		
+		j = 0;
+		while(j < 2*PI)
+		{
+			offsetX = Cos(3*j)*Sin(2*j)*100;
+			offsetY = Cos(3*j)*Cos(2*j)*100;
+			emit bullet(x + offsetX, y+offsetY, 0, Random(0, PI), -1, YELLOW1, 1) : explode(3);		
+			j += PI/180;
+			emit bullet(x + offsetX, y+offsetY, 0, Random(0, PI), -1, YELLOW1, 1) : explode(3);		
+			j += PI/180;
+			wait(0);
+		}
+		j=0;
+		while(j < 2*PI)
+		{
+			offsetX = Cos(3*j)*Sin(2*j)*100;
+			offsetY = Cos(3*j)*Cos(2*j)*100;
+			emit bullet(x - offsetX, y+ offsetY, 0, Random(0, PI), -1, RED1, 2) : explode2(1);		
+			j += PI/180;
+			emit bullet(x - offsetX, y+offsetY, 0, Random(0, PI), -1, RED1, 2) : explode2(1);		
+			j += PI/180;
+			wait(0);
+		}
+		
+		wait(1);
+	}
+}
+
+controller specialtest3
+{
+	main = emitter specialtest3emitter(0, 0, 0);
+
+	// Redundant state, but necessary for now.  Later versions of
+	// bulletscript may create these automatically.
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter specialtest2emitter
+{
+	angle = PI/8;
+	curFrame = 0;
+	homing = affector Homing(0);
+	
+	curvCtrl = function(speed)
+	{
+		numBuls = 24;
+		degC = 2*PI/numBuls;
+		
+		wait(1);
+		$speed = {0.5, 0.5};
+		wait(0.5);
+		
+		i = 0;
+		while(i < numBuls)
+		{
+			emit bullet($x, $y, 6, degC*i, -1, YELLOW1, 2);
+			i++;
+		}
+		$speed = speed;
+		wait(1);
+		$speed = {0.5, 0.5};
+		wait(0.5);
+		
+		i = 0;
+		while(i < numBuls)
+		{
+			emit bullet($x, $y, 6, degC*i, -1, YELLOW1, 2);
+			i++;
+		}
+		die;
+	}
+	
+	Emit = state
+	{		
+		emitcl curvedlaser(This_X, This_Y, 3, GetAngleTowardsPlayer(This_X, This_Y), 3, RED6) : homing, curvCtrl(3);
+		wait(2);
+	}
+}
+
+controller spiraltest1
+{
+	main = emitter spiraltest1emitter(0, 0, 0);
+
+	// Redundant state, but necessary for now.  Later versions of
+	// bulletscript may create these automatically.
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter spiraltest1emitter
+{
+	Emit = state
+	{
+		maxBul = 64;
+		degC = 2*PI/maxBul;
+		
+		i = 0;
+		while(i < maxBul)
+		{
+			emit bullet(This_X + Cos(2*PI/3 + degC*i)*i, This_Y + Sin(2*PI/3 + degC*i)*i, (i / 14) + 0.5, 2*PI/3 + degC*i + PI/2, -1, GREEN1, 2);
+			emit bullet(This_X + Cos(4*PI/3 + degC*i)*i, This_Y + Sin(4*PI/3 + degC*i)*i, (i / 14) + 0.5, 4*PI/3 + degC*i + PI/2, -1, RED1, 2);
+			emit bullet(This_X + Cos(6*PI/3 + degC*i)*i, This_Y + Sin(6*PI/3 + degC*i)*i, (i / 14) + 0.5, 6*PI/3 + degC*i + PI/2, -1, CYAN1, 2);
+			i++;
+			wait(0);
+		}
+		wait(2);
+	}
+}
+
+controller specialtest1
+{
+	main = emitter specialtest1emitter(0, 0, 0);
+
+	// Redundant state, but necessary for now.  Later versions of
+	// bulletscript may create these automatically.
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter specialtest1emitter
+{
+	flower = function(angle)
+	{
+		$speed = {0, 0.25};
+		wait(0.25);
+		$speed = 0;
+		wait(0.75);
+		$speed = 1;
+		$angle = angle;
+		
+		$radius += {4, 3};	
+	}
+	
+	Emit = state
+	{
+		maxBul = 8;
+		degC = (PI/2)/maxBul;
+		maxBul2 = 16;
+		degC2 = 2*PI/maxBul2;
+		
+		i = 0;
+		tea = GetAngleTowardsPlayer(This_X, This_Y) - 0.5*(degC*maxBul)+degC*0.5;
+			
+		while(i < maxBul)
+		{
+			j = 0;
+			while(j < maxBul2)
+			{
+				emit bullet(This_X, This_Y, 8, tea+ i*degC, -1, RED1 + j % 6, 1) : flower(degC2*j);
+				j++;
+			}
+			i++;
+		}
+		wait(2);
+	}
+}
+
+controller BalancedPlayerController
+{
+	center = emitter BalancedPlayerEmitter1(0, 0, 0);
+	back = emitter BalancedPlayerEmitter2(0, -6, 0);
+	spread1 = emitter BalancedPlayerEmitter3(0, 2, 0);
+	spread2 = emitter BalancedPlayerEmitter4(0, 4, 0);
+	spread3 = emitter BalancedPlayerEmitter5(0, 6, 0);
+	laser = emitter BalancedPlayerEmitter6(0, 0, 0);
+	
+	shift = event()
+	{
+		$spread1.angled = {0, .125};
+		$spread2.angled = {0, .125};
+		$spread3.angled = {0, .125};
+		$back.angled = -PI*0.5;
+	}
+	
+	regular = event()
+	{
+		$spread1.angled = {PI/8, .125};
+		$spread2.angled = {PI/6, .125};
+		$spread3.angled = {PI/12, .125};
+		$back.angled = PI*0.5;
+	}
+	
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter BalancedPlayerEmitter1
+{
+	Emit = state
+	{
+		emitp bullet(This_X, This_Y, 16, -PI*0.5, 1, 5, STANDARD_GREEN);
+		wait(0.02);
+	}
+}
+
+emitter BalancedPlayerEmitter2
+{
+	angled = PI/2;
+	homing = affector PlayerHoming(0);
+	Emit = state
+	{
+		emitp bullet(This_X, This_Y, 8, angled, 0.5, 5, BALANCED_OTHER) :  homing;
+		wait(0.08);
+	}
+}
+
+emitter BalancedPlayerEmitter3
+{
+	angled = PI/8;
+	
+	Emit = state
+	{
+		emitp bullet(This_X, This_Y, 16, -PI/2 + angled, 0.25, 5, BALANCED_OTHER);
+		emitp bullet(This_X, This_Y, 16, -PI/2 - angled, 0.25, 5, BALANCED_OTHER);
+		wait(0.08);
+	}
+}
+
+emitter BalancedPlayerEmitter4
+{
+	angled = PI/6;
+	
+	Emit = state
+	{
+		emitp bullet(This_X, This_Y, 16, -PI/2 + angled, 0.25, 5, BALANCED_OTHER);
+		emitp bullet(This_X, This_Y, 16, -PI/2 - angled, 0.25, 5, BALANCED_OTHER);
+		wait(0.08);
+	}
+}
+
+emitter BalancedPlayerEmitter5
+{
+	angled = PI/12;
+	
+	Emit = state
+	{
+		emitp bullet(This_X, This_Y, 16, -PI/2 + angled, 0.25, 5, BALANCED_OTHER);
+		emitp bullet(This_X, This_Y, 16, -PI/2 - angled, 0.25, 5, BALANCED_OTHER);
+		wait(0.08);
+	}
+}
+
+emitter BalancedPlayerEmitter6
+{
+	spinme = affector Spin(5);
+	Emit = state
+	{
+		emitp bullet(This_X, This_Y, 4, -PI/2, 15, 32, BALANCED_BIG) : spinme;
+		wait(2);
+	}
+}
+
+controller BombExplode
+{
+	main = emitter BombExplodeEmit(0, 0, 0);
+	
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter BombExplodeEmit
+{	
+	pHoming = affector Homing(0);
+	DieSoon = function(time)
+	{
+		wait(1);
+		$alpha = {0, time-1};
+		wait(time-1);
+		die;
+	}
+	
+	Explode = function(time)
+	{
+		$speed += {2, time};
+		wait(time);
+		radius = 0;;
+		i = 0;
+		while(radius <= 30)
+		{
+			offsetx = Cos(i*PI/8);
+			offsety = Sin(i*PI/8);
+			emit bullet($x + offsetx*radius, $y+offsety*radius, 0, 0, -1, GREEN4, 1) : DieSoon(2);
+			i++;
+			radius += 0.25;
+		}
+		
+		i = 0;
+		while(i < 32)
+		{
+			offsetx = Cos(i*PI/16);
+			offsety = Sin(i*PI/16);
+			emit bullet($x + offsetx*radius, $y+offsety*radius, 0, 0, -1, GREEN4, 1) : DieSoon(2);
+			i++;		
+		}
+		die;
+	}
+	
+	Emit = state
+	{	
+		emitt bullet(This_X, This_Y, 1, Player_X, Player_Y, -1, GREEN4, 1) : pHoming, Explode(3);
+		
+		wait(4);
+	}
+}
+
+controller SurroundOnce
+{
+	main = emitter SurroundOnceEmit(0, 0, 0);
+	
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter SurroundOnceEmit
+{
+	slowD = affector SetSpeedAfterFrames(1, 10);
+	
+	Init = state
+	{
+		wait(0.5);
+		goto Emit;
+	}
+	
+	Emit = state
+	{	
+		randBul = RandomInt(RED4, BLUE4);
+		
+		angleTow = GetAngleTowardsPlayer(This_X, This_Y);
+		i = -2;
+		while(i <= 2)
+		{
+			emit bullet(This_X, This_Y, 8, angleTow+i*PI/180, -1, randBul, 1) : slowD;
+			wait(0);
+			i++;
+		}
+		wait(4);
+	}
+}
+
+controller TriHoming
+{
+	main = emitter TriHomingEmit(0, 0, 0);
+	
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter TriHomingEmit
+{
+	slowD = affector SetSpeedAfterFrames(1, 10);
+
+	Emit = state
+	{	
+		//x y speed angle sprite isEnemy 
+		i = 0;
+		while(i < 16)
+		{
+			ang = GetAngleTowardsPlayer(This_X, This_Y);
+			//emit bullet(This_X, This_Y, (i+1)*0.5, ang, -1, RED3, 1);
+			//x y speed angle rad cFrames spr
+			emit bullet(This_X, This_Y, (i+1)*0.5, ang-(2/3)*PI, -1, RED3, 1);
+			emit bullet(This_X, This_Y, (i+1)*0.5, ang+(2/3)*PI, -1, RED3, 1);
+			wait(0);
+			i++;
+		}
+		emitl laser(This_X, This_Y, 4, ang, 4, 60, RED4);	
+		wait(1.5);
+	}
+}
+
+controller HomingShot1
+{
+	main = emitter HomingShot1Emit(0, 0, 0);
+	
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter HomingShot1Emit
+{
+	slowD = affector SetSpeedAfterFrames(1, 10);
+	Emit = state
+	{	
+		wait(2);
+		emitt bullet(This_X, This_Y, 8, Player_X, Player_Y, -1, GREEN6, 1) : slowD;
+		wait(1);
+	}
+}
+
+controller AreaShot1
+{
+	main = emitter AreaShot1Emit(0, 0, 0);
+	
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter AreaShot1Emit
+{
+	curFrame = 0;
+	
+	slowD1 = affector SetSpeedAfterFrames(1, 20);
+	slowD3 = affector SetSpeedAfterFrames(3, 10);
+	
+	Init = state
+	{
+		wait(2);
+		goto Emit;
+	}
+	
+	Emit = state
+	{	
+		maxBul1 = 16;
+		degC1 = 2*PI/maxBul1;
+	
+		i = 0;
+		
+			emit bullet(This_X, This_Y, 8, degC1*curFrame, -1, YELLOW8, 1) : slowD1;
+			emit bullet(This_X, This_Y, 8, -degC1*curFrame, -1, YELLOW8, 1) : slowD1;
+		
+		maxBul1 = 14;
+		degC1 = 2*PI/maxBul1;
+		
+			emit bullet(This_X, This_Y, 8, degC1*curFrame, -1, MAGENTA8, 1) : slowD3;
+			emit bullet(This_X, This_Y, 2, degC1*curFrame, -1, MAGENTA8, 1);
+			emit bullet(This_X, This_Y, 4, -degC1*0.5-degC1*curFrame, -1, MAGENTA8, 1);
+		
+		wait(0.05);
+		curFrame++;
+	}
+}
+
+controller Spiraller
+{
+	main = emitter SpirallerEmit(0, 0, 0);
+	
+	Stage1 = state
+	{
+		wait(10);
+	}
+}
+
+emitter SpirallerEmit
+{	
+	curFrame = 0;
+	degC = 2*PI/24;
+	
+	slow15 = affector SetSpeedAfterFrames(1.5, 10);
+	slow3 = affector SetSpeedAfterFrames(3, 10);
+	
+	Emit = state
+	{	
+		emit bullet(This_X, This_Y, 8, Random(0, 2*PI), -1, YELLOW8, 1) : slow3;
+		emit bullet(This_X, This_Y, 8, Random(0, 2*PI), -1, CYAN8, 1) : slow3;
+		wait(0);
+		curFrame++;
+	}
+}
+
+
+
+controller Boss1
+{
+	preSA1 = emitter Boss1PreSA1(0, 0, 0);
+	SA1 = emitter Boss1SA1(0, 0, 0);
+	preSA2 = emitter Boss1PreSA2(0, 0, 0);
+	SA2 = emitter Boss1SA2(0, 0, 0);
+	
+	hp1100 = event()
+	{
+		disable $preSA1;
+		disable $preSA2;
+		disable $SA1;
+		disable $SA2;
+		
+		enable $preSA1;
+	}
+	
+	hp900 = event()
+	{
+		disable $preSA1;
+		disable $preSA2;
+		disable $SA1;
+		disable $SA2;
+		
+		enable $SA1;
+	}
+	
+	hp600 = event()
+	{
+		disable $preSA1;
+		disable $preSA2;
+		disable $SA1;
+		disable $SA2;
+		
+		enable $preSA2;
+	}
+	
+	hp400 = event()
+	{
+		disable $preSA1;
+		disable $preSA2;
+		disable $SA1;
+		disable $SA2;
+	
+		enable $SA2;
+	}
+	
+	
+	Stage = state
+	{
+		disable $preSA1;
+		disable $preSA2;
+		disable $SA1;
+		disable $SA2;
+		
+		goto Idle;
+	}
+	
+	Idle = state
+	{
+		wait(100);
+	}
+}
+
+emitter Boss1PreSA1
+{	
+	
+	Emit = state
+	{
+		i = 0;
+		while(i < MAGENTA6)
+		{
+			emitt bullet(This_X, This_Y, 1, Player_X, Player_Y, -1, i, 1);
+			wait(1);
+			i++;
+		}
+	}
+}
+
+emitter Boss1SA1
+{
+	angT = function(d)
+	{
+		$angle += {PI, 8};
+	}
+	
+	Emit = state
+	{	
+		degC = 2*PI/16;
+		i = 0;
+		while(i < 16)
+		{
+			emit bullet(This_X, This_Y, 2, degC*i, -1, RED3, 1) : angT(0);
+			i++;
+		}
+		emit bullet(This_X, This_Y, 0.5, PI/2, -1, RED4, 1);
+			
+		wait(1.25);
+	}
+}
+
+emitter Boss1PreSA2
+{
+	curFrame = 0;
+	curFrame2 = 0;
+	degC = 2*PI/64;
+	
+	slowD = affector SetSpeedAfterFrames(1, 10);
+		
+	Emit = state
+	{
+		i = 0;
+		while(i < 5)
+		{
+		offsetX = This_X + Cos(i*2*PI/5+curFrame*degC)*32;
+		offsetY = This_Y + Sin(i*2*PI/5+curFrame*degC)*32;
+		emit bullet(offsetX, offsetY, 8,curFrame*degC + i*2*PI/5, -1, GREEN1, 1) : slowD;
+		i++;
+		}
+		
+		
+		i = 0;
+		while(i < 5)
+		{
+		offsetX = This_X + Cos(-1*PI/5+i*2*PI/5+curFrame2*degC)*32;
+		offsetY = This_Y + Sin(-1*PI/5+i*2*PI/5+curFrame2*degC)*32;
+		emit bullet(offsetX, offsetY, 8,-1*PI/5+i*2*PI/5+curFrame2*degC, -1, CYAN1, 1) : slowD;
+		i++;
+		}
+		wait(0.05);
+		curFrame += 1;
+		curFrame2 -= 1;
+	}
+}
+
+emitter Boss1SA2
+{	
+	curvCtrl = function(t)
+	{
+		//$alpha = {0,5};
+		$speed = {1, 0.25};
+		wait(0.25);
+		$speed = {6, 2};	
+		wait(0.25);
+		
+		i = 0;
+		while(i < 10)
+		{
+		$angle += {t*PI/3,0.75};
+		wait(0.75);
+		$angle += {t*-PI/4,0.75};
+		i++;
+		}
+	}
+	
+	Emit = state
+	{	
+		i = 0;
+		maxBuls = 12;
+		degC = 2*PI/maxBuls;
+		
+		while(i < maxBuls)
+		{
+			//x y speed angle rad spr
+			emitl laser(This_X, This_Y, 8, degC*i, 4, 30, RED5);
+			emitcl curvedlaser(This_X, This_Y, 8, degC * i, 4, RED4) : curvCtrl(1);
+			emitcl curvedlaser(This_X, This_Y, 8, degC * i, 8, BLUE4) : curvCtrl(-1);
+			emitcl curvedlaser(This_X, This_Y, 8, degC * i, 4, RED4) : curvCtrl(0.5);
+			emitcl curvedlaser(This_X, This_Y, 8, degC * i, 8, BLUE4) : curvCtrl(-0.5);
+			
+			i++;
+		}
+		
+		wait(0.5);
+		i = 0;
+		while(i < maxBuls)
+		{
+		emitl laser(This_X, This_Y, 8, degC*0.25+degC*i, 16, 30, BLUE8);
+		emitl laser(This_X, This_Y, 8, degC*0.75+degC*i, 16, 30, BLUE8);
+		i++;
+		}
+		wait(1.5);
+	}
+}
